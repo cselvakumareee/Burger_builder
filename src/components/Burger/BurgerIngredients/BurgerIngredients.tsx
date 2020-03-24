@@ -3,11 +3,12 @@ import PropTypes from 'prop-types';
 import './BurgerIngredients.scss';
 
 interface BurgerInterface {
-    type: any;
+    type: string;
 }
 
 class BurgerIngredients extends Component<BurgerInterface,{}>{
-    static PropTypes: { type: PropTypes.Validator<string>; };
+    // static PropTypes: { type: PropTypes.Validator<string>; };
+    
     render(){
         let ingredient = null;
         switch(this.props.type){
@@ -48,8 +49,8 @@ class BurgerIngredients extends Component<BurgerInterface,{}>{
 };
 
 
-BurgerIngredients.PropTypes = {
-    type : PropTypes.string.isRequired
- };
+// BurgerIngredients.PropTypes = {
+//     type : PropTypes.string.isRequired
+//  };
 
 export default BurgerIngredients;
