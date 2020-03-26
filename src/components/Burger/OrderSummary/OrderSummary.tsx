@@ -9,12 +9,7 @@ const orderSummary = (props:any) => {
       return(<li key={igkey}><span style={{textTransform:'capitalize'}}>{igkey}</span>:{ingredients[igkey]}</li>);
       })
       
-    // let ingredientSummaryUpdated:any = Object.keys(props.ingredients)
-    // .map((igkey) =>{
-    // return [...Array(props.ingrdients[igkey])].map((_,i)=>{
-    // return(<li>{igkey}</li>)
-    // });
-    // });
+    
     console.log("ingredient summary"+(props.ingrdients));
     return(
        <Auxiliary>
