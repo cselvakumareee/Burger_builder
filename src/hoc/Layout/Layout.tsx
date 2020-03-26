@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import Auxiliary from "../../hoc/Auxiliary";
+import Auxiliary from "../Auxiliary/Auxiliary";
 import "./Layout.scss";
-import Toolbar from "../Navigation/Toolbar/Toolbar";
-import SideDrawer from "../SideDrawer/SideDrawer";
+import Toolbar from "../../components/Navigation/Toolbar/Toolbar";
+import SideDrawer from "../../components/SideDrawer/SideDrawer";
 
 interface ILayoutState{
   sideDrawerClosed:boolean;
