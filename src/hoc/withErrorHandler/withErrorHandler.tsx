@@ -3,30 +3,39 @@ import Auxiliary from '../Auxiliary/Auxiliary';
 import Modal from '../../components/UI/Modal/Modal';
 import Axios from 'axios';
 
-// interface Imodalprops{
-//     modalClosed: any;
-//   show: any;
-// }
+
 
 const withErrorHandler = (WrappedComponent:any,axios:any) => {
 return class extends Component{
+    requestInterceptor: any;
+    responseInterceptor: any;
+    constructor(props:any){
+      super(props);
+    }
     state={
         errorShow:false,
         error:{
             message:''
-        }
+        },
+        
     }
     componentDidMount(){
-        axios.interceptors.request.use((req:any)=>{
+         this.requestInterceptor = axios.interceptors.request.use((req:any)=>{
             this.setState({error:null});
             return req;
         })
-        axios.interceptors.response.use((res:any) => res, (error:any)=>{
+         this.responseInterceptor = axios.interceptors.response.use((res:any) => res, (error:any)=>{
             console.log("error is"+error.message);
           this.setState({error:error, errorShow:true
           });
           
         })
+    }
+
+    componentWillUnmount(){
+        console.log("will unmount"+this.requestInterceptor,this.responseInterceptor);
+       axios.interceptors.request.eject(this.requestInterceptor);
+       axios.interceptors.response.eject(this.responseInterceptor);
     }
 
     errorConfirmHandler= () =>{
