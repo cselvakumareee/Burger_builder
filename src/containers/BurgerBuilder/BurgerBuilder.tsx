@@ -9,6 +9,7 @@ import axios from '../../axios-orders';
 import Spinner from '../../components/UI/Spinner/spinner';
 import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 
+
 const INGREDIENT_PRICES = {
   salad: 0.4,
   cheese: 0.5,
@@ -16,7 +17,12 @@ const INGREDIENT_PRICES = {
   bacon: 0.7
 };
 
-class BurgerBuilder extends Component {
+interface IBurgerBuilderProps{
+  match:any,
+  history:any
+}
+
+class BurgerBuilder extends Component<IBurgerBuilderProps,{}> {
   constructor(props: any) {
     super(props);
   }
@@ -33,10 +39,12 @@ class BurgerBuilder extends Component {
     purchaseable: false,
     purchasing: false,
     loading: false,
-    error:false
+    error:false,
+    queryParams:[]
   };
 
   componentDidMount(){
+    console.log("burgerbuilder"+this.props.match.history);
     axios.get("/ingredients.json").then(response =>{
       console.log("ingredientsjson"+response.data);
       this.setState({ingredients:response.data})
@@ -58,32 +66,19 @@ class BurgerBuilder extends Component {
   };
 
   purchaseContinueHandler = () => {
-    //alert("you continue");
-    this.setState({
-      loading: true
-    });
-    const order = {
-      ingredients: this.state.ingredients,
-      price: this.state.totalPrice,
-      customer:{
-        name: 'selvakumar Chinnappan',
-        address:{
-          street:'99 anna nagar',
-          zipcode:'620022',
-          country: 'India'
-        },
-        email:'cselvakumareee@gmail.com'
-      },
-      deliveryMethod:'fastest'
+    
+    //Note: convert state ingredients to query search -- important
+    let queryParamsFinal:any = this.state.queryParams;
+    let stateIngredients:any = {...this.state.ingredients};
+    for(let i in stateIngredients){
+      queryParamsFinal.push(encodeURIComponent(i)+'='+encodeURIComponent(stateIngredients[i]));
     }
-    axios.post('/orders.json',order)
-    .then(response=>{
-      console.log(response);
-      this.setState({loading:false,purchasing:false});
-    }).catch(error => {
-      console.log(error);
-      this.setState({loading:false,purchasing:false});
-    });
+    queryParamsFinal.push("price="+this.state.totalPrice.toFixed(2));
+    let queryString = queryParamsFinal.join('&');
+    this.props.history.push({
+      pathname:'/checkout',
+      search:'?'+queryString
+    })
   };
 
   updatePurchaseState = (ingredients: any) => {
