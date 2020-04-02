@@ -20,7 +20,11 @@ class ContactData extends Component<IContactDataProps, {}> {
           type: "text",
           placeholder: "Your Name"
         },
-        value: ""
+        value: "",
+        validation:{
+          required: true
+        },
+        valid: false
       },
       street: {
         elementtype: "input",
@@ -28,7 +32,11 @@ class ContactData extends Component<IContactDataProps, {}> {
           type: "text",
           placeholder: "Your Street name"
         },
-        value: ""
+        value: "",
+        validation:{
+          required: true
+        },
+        valid: false
       },
       zipcode: {
         elementtype: "input",
@@ -36,7 +44,13 @@ class ContactData extends Component<IContactDataProps, {}> {
           type: "text",
           placeholder: "Postal code"
         },
-        value: ""
+        value: "",
+        validation:{
+          required: true,
+          minLength:5,
+          maxLength: 5
+        },
+        valid: false
       },
       country: {
         elementtype: "input",
@@ -44,7 +58,11 @@ class ContactData extends Component<IContactDataProps, {}> {
           type: "text",
           placeholder: "Your Country name"
         },
-        value: ""
+        value: "",
+        validation:{
+          required: true
+        },
+        valid: false
       },
       email: {
         elementtype: "input",
@@ -52,7 +70,11 @@ class ContactData extends Component<IContactDataProps, {}> {
           type: "email",
           placeholder: "Your Email"
         },
-        value: ""
+        value: "",
+        validation:{
+          required: true
+        },
+        valid: false
       },
       deliveryMethod: {
         elementtype: "select",
@@ -100,6 +122,20 @@ class ContactData extends Component<IContactDataProps, {}> {
       });
   };
 
+  checkValidity = (value:any, rules:any) =>{
+   let isValid = true;
+   if(rules.required){
+     isValid = value.trim() !== '' && isValid;
+   }
+   if(rules.minLength){
+     isValid = value.length >= rules.minLength && isValid;
+   }
+   if(rules.maxLength){
+    isValid = value.length <= rules.maxLength && isValid;
+  }
+   return isValid;
+  }
+
   inputChangeHandler = (event: any, inputIdentifier: any) => {
     console.log(event.target.value);
     //Below will help to clone the object, but it wont clone deeply mainly it wont clone inside elementConfig
@@ -111,8 +147,10 @@ class ContactData extends Component<IContactDataProps, {}> {
     const updatedFormElement = { ...updatedOrderFormFinal[inputIdentifier] };
 
     updatedFormElement.value = event.target.value;
+    updatedFormElement.valid = this.checkValidity(updatedFormElement.value, updatedFormElement.validation);
 
     updatedOrderFormFinal[inputIdentifier] = updatedFormElement;
+    console.log(updatedFormElement);
     this.setState({ OrderForm: updatedOrderFormFinal });
   };
   render() {
