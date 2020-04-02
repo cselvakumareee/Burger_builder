@@ -1,88 +1,150 @@
 import React, { Component } from "react";
 import Button from "../../../components/UI/Button/Button";
 import "./ContactData.scss";
-import axios from '../../../axios-orders';
-import Spinner from '../../../components/UI/Spinner/spinner';
+import axios from "../../../axios-orders";
+import Spinner from "../../../components/UI/Spinner/spinner";
+import Input from "../../../components/UI/Input/Input";
 
 interface IContactDataProps {
   ingredients: any;
-  price:any,
-  history:any
+  price: any;
+  history: any;
 }
 
 class ContactData extends Component<IContactDataProps, {}> {
   state = {
-    name: "",
-    email: "",
-    address: {
-      street: "",
-      postalCode: ""
+    OrderForm: {
+      name: {
+        elementtype: "input",
+        elementConfig: {
+          type: "text",
+          placeholder: "Your Name"
+        },
+        value: ""
+      },
+      street: {
+        elementtype: "input",
+        elementConfig: {
+          type: "text",
+          placeholder: "Your Street name"
+        },
+        value: ""
+      },
+      zipcode: {
+        elementtype: "input",
+        elementConfig: {
+          type: "text",
+          placeholder: "Postal code"
+        },
+        value: ""
+      },
+      country: {
+        elementtype: "input",
+        elementConfig: {
+          type: "text",
+          placeholder: "Your Country name"
+        },
+        value: ""
+      },
+      email: {
+        elementtype: "input",
+        elementConfig: {
+          type: "email",
+          placeholder: "Your Email"
+        },
+        value: ""
+      },
+      deliveryMethod: {
+        elementtype: "select",
+        elementConfig: {
+          options: [
+            { value: "Fastest", displayValue: "Fastest" },
+            { value: "Cheapest", displayValue: "Cheapest" }
+          ]
+        },
+        value: ""
+      }
     },
-    loading:false
+    loading: false
   };
 
   orderHandler = (event: any) => {
     event.preventDefault();
-
     this.setState({
       loading: true
     });
+    const formData: any = {};
+    let orderFormLoop: any = { ...this.state.OrderForm };
+    for (let formElementIdentifier in orderFormLoop) {
+      formData[formElementIdentifier] =
+        orderFormLoop[formElementIdentifier].value;
+      //output: name: 'selva'
+    }
     const order = {
       ingredients: this.props.ingredients,
       price: this.props.price,
-      customer: {
-        name: "selvakumar Chinnappan",
-        address: {
-          street: "99 anna nagar",
-          zipcode: "620022",
-          country: "India"
-        },
-        email: "cselvakumareee@gmail.com"
-      },
-      deliveryMethod: "fastest"
+      //Note: Below place if you are using this.state.orderform you will get lots of unwanted fields like elementConfig & elementType:input
+      //thats y they are using form data
+      orderData: formData
     };
     axios
       .post("/orders.json", order)
       .then(response => {
         console.log(response);
         this.setState({ loading: false });
-        this.props.history.push('/');
+        this.props.history.push("/");
       })
       .catch(error => {
         console.log(error);
         this.setState({ loading: false });
       });
   };
+
+  inputChangeHandler = (event: any, inputIdentifier: any) => {
+    console.log(event.target.value);
+    //Below will help to clone the object, but it wont clone deeply mainly it wont clone inside elementConfig
+    const updatedOrderForm = { ...this.state.OrderForm };
+    //To get rid of error we are cloning below again
+    const updatedOrderFormFinal: any = { ...updatedOrderForm };
+
+    //Below code will help deep clone specifically inside elementConfig //input identifier will help which input column is modified ex email, name
+    const updatedFormElement = { ...updatedOrderFormFinal[inputIdentifier] };
+
+    updatedFormElement.value = event.target.value;
+
+    updatedOrderFormFinal[inputIdentifier] = updatedFormElement;
+    this.setState({ OrderForm: updatedOrderFormFinal });
+  };
   render() {
-      let form = (
-        <form>
-        <input className="Input" type="text" name="name" placeholder="Name" />
-        <input
-          className="Input"
-          type="email"
-          name="email"
-          placeholder="Email"
-        />
-        <input
-          className="Input"
-          type="text"
-          name="street"
-          placeholder="Street"
-        />
-        <input
-          className="Input"
-          type="text"
-          name="postal"
-          placeholder="Postal code"
-        />
-        <Button btnType="Success" clicked={this.orderHandler}>
-          ORDER
-        </Button>
+    const formElementArray = [];
+    let orderFormFinal: any = { ...this.state.OrderForm };
+    //Note: In state we have data as a js object but looping through we need array of object thats y we are using for loop here
+    for (let key in orderFormFinal) {
+      formElementArray.push({
+        id: key,
+        Config: orderFormFinal[key]
+      });
+    }
+    let form = (
+      <form onSubmit={this.orderHandler}>
+        {formElementArray.map((formElement: any) => (
+          <Input
+            key={formElement.id}
+            elementtype={formElement.elementtype}
+            elementConfig={formElement.Config.elementConfig}
+            value={formElement.Config.value}
+            changed={(event: any) =>
+              this.inputChangeHandler(event, formElement.id)
+            }
+          />
+        ))}
+
+        <Button btnType="Success">ORDER</Button>
       </form>
-      );
-      if(this.state.loading){
-       form = <Spinner />
-      }
+    );
+    if (this.state.loading) {
+      form = <Spinner />;
+    }
     return (
       <div className="ContactData">
         <h4>Enter your details</h4>
