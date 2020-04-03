@@ -12,6 +12,10 @@ interface IContactDataProps {
 }
 
 class ContactData extends Component<IContactDataProps, {}> {
+  constructor(props:any){
+super(props);
+console.log()
+  }
   state = {
     OrderForm: {
       name: {
@@ -166,6 +170,7 @@ class ContactData extends Component<IContactDataProps, {}> {
     let form = (
       <form onSubmit={this.orderHandler}>
         {formElementArray.map((formElement: any) => (
+          <div>
           <Input
             key={formElement.id}
             elementtype={formElement.elementtype}
@@ -175,6 +180,8 @@ class ContactData extends Component<IContactDataProps, {}> {
               this.inputChangeHandler(event, formElement.id)
             }
           />
+          <p>{formElement.elementtype}</p>
+          </div>
         ))}
 
         <Button btnType="Success">ORDER</Button>
