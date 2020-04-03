@@ -7,6 +7,9 @@ interface IInputProps{
   elementConfig:any,
   value:any,
   changed:any,
+  invalid:any,
+  shouldValidate:any,
+  touched:any
   //label:any
 }
 
@@ -18,15 +21,22 @@ class Input extends Component<IInputProps,{}> {
   render() {
     let inputElement = null;
     let elementTypeFinal = this.props.elementtype;
+    let inputClasses = ["InputElement"];
+    let validationError = null;
+    if(this.props.invalid && this.props.shouldValidate && this.props.touched){
+      inputClasses.push('Invalid');
+      validationError = <p>Please enter valid value</p>
+    }
+
    // console.log("elementtype" + elementTypeFinal);
     // let inputColumn = "input";
     //let selectColumn = "select";
     //let optionValues = {...props.elementConfig.options};
     switch (elementTypeFinal) {
-      case "input":
+      case ("input"):
         inputElement = (
           <input
-            className="InputElement"
+            className={inputClasses.join(' ')}
             {...this.props.elementConfig}
             value={this.props.value}
             onChange={this.props.changed}
@@ -34,10 +44,10 @@ class Input extends Component<IInputProps,{}> {
         );
         break;
 
-      case "textarea":
+      case ("textarea"):
         inputElement = (
           <textarea
-            className="InputElement"
+            className={inputClasses.join(' ')}
             {...this.props.elementConfig}
             value={this.props.value}
             onChange={this.props.changed}
@@ -45,10 +55,10 @@ class Input extends Component<IInputProps,{}> {
         );
         break;
 
-      case "select":
+      case ("select"):
         inputElement = (
           <select
-            className="InputElement"
+            className={inputClasses.join(' ')}
             value={this.props.value}
             onChange={this.props.changed}
           >
@@ -67,7 +77,7 @@ class Input extends Component<IInputProps,{}> {
       default:
         inputElement = (
           <input
-            className="InputElement"
+            className={inputClasses.join(' ')}
             {...this.props.elementConfig}
             value={this.props.value}
             onChange={this.props.changed}
@@ -78,6 +88,7 @@ class Input extends Component<IInputProps,{}> {
           <div className="Input">
             {/* <label className="Label">{this.props.label}</label> */}
             {inputElement}
+            {validationError}
           </div>
         );
     }

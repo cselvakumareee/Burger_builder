@@ -28,7 +28,8 @@ console.log()
         validation:{
           required: true
         },
-        valid: false
+        valid: false,
+        touched:false
       },
       street: {
         elementtype: "input",
@@ -40,7 +41,8 @@ console.log()
         validation:{
           required: true
         },
-        valid: false
+        valid: false,
+        touched:false
       },
       zipcode: {
         elementtype: "input",
@@ -54,7 +56,8 @@ console.log()
           minLength:5,
           maxLength: 5
         },
-        valid: false
+        valid: false,
+        touched:false
       },
       country: {
         elementtype: "input",
@@ -66,7 +69,8 @@ console.log()
         validation:{
           required: true
         },
-        valid: false
+        valid: false,
+        touched:false
       },
       email: {
         elementtype: "input",
@@ -78,7 +82,8 @@ console.log()
         validation:{
           required: true
         },
-        valid: false
+        valid: false,
+        touched:false
       },
       deliveryMethod: {
         elementtype: "select",
@@ -88,9 +93,12 @@ console.log()
             { value: "Cheapest", displayValue: "Cheapest" }
           ]
         },
-        value: ""
+        value: "Fastest",
+        valid:true,
+        validation:{}
       }
     },
+    formIsValid: false,
     loading: false
   };
 
@@ -128,6 +136,10 @@ console.log()
 
   checkValidity = (value:any, rules:any) =>{
    let isValid = true;
+
+   if(!rules){
+     return true;
+   }
    if(rules.required){
      isValid = value.trim() !== '' && isValid;
    }
@@ -152,10 +164,17 @@ console.log()
 
     updatedFormElement.value = event.target.value;
     updatedFormElement.valid = this.checkValidity(updatedFormElement.value, updatedFormElement.validation);
+    updatedFormElement.touched = true;
 
     updatedOrderFormFinal[inputIdentifier] = updatedFormElement;
-    console.log(updatedFormElement);
-    this.setState({ OrderForm: updatedOrderFormFinal });
+
+    
+    let formIsValid = true;
+    for(let inputIdentifier in updatedOrderFormFinal){
+      formIsValid = updatedOrderFormFinal[inputIdentifier].valid && formIsValid;
+    }
+    //Note: here state property:above variable name like formIsValid:formIsValid
+    this.setState({ OrderForm: updatedOrderFormFinal, formIsValid: formIsValid });
   };
   render() {
     const formElementArray = [];
@@ -176,6 +195,9 @@ console.log()
             elementtype={formElement.elementtype}
             elementConfig={formElement.Config.elementConfig}
             value={formElement.Config.value}
+            invalid = {!formElement.Config.valid}
+            shouldValidate = {formElement.Config.validation}
+            touched = {formElement.Config.touched}
             changed={(event: any) =>
               this.inputChangeHandler(event, formElement.id)
             }
@@ -184,7 +206,7 @@ console.log()
           </div>
         ))}
 
-        <Button btnType="Success">ORDER</Button>
+        <Button btnType="Success" disabled={!this.state.formIsValid}>ORDER</Button>
       </form>
     );
     if (this.state.loading) {
