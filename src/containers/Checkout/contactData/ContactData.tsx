@@ -4,11 +4,14 @@ import "./ContactData.scss";
 import axios from "../../../axios-orders";
 import Spinner from "../../../components/UI/Spinner/spinner";
 import Input from "../../../components/UI/Input/Input";
+import { connect } from 'react-redux';
 
 interface IContactDataProps {
-  ingredients: any;
-  price: any;
-  history: any;
+  //ingredients: any;
+  //price: any;
+  history: any,
+  ings: any,
+  price: any
 }
 
 class ContactData extends Component<IContactDataProps, {}> {
@@ -115,7 +118,7 @@ console.log()
       //output: name: 'selva'
     }
     const order = {
-      ingredients: this.props.ingredients,
+      ingredients: this.props.ings,
       price: this.props.price,
       //Note: Below place if you are using this.state.orderform you will get lots of unwanted fields like elementConfig & elementType:input
       //thats y they are using form data
@@ -219,6 +222,13 @@ console.log()
       </div>
     );
   }
+};
+
+const mapStateToProps = (state:any) => {
+  return{
+    ings: state.ingredients,
+    price: state.totalPrice
+  }
 }
 
-export default ContactData;
+export default connect(mapStateToProps)(ContactData);
