@@ -1,13 +1,16 @@
-import * as actionTypes from './Action';
+import * as actionTypes from '../Action/ActionTypes';
+import { updateObject } from '../Utility';
 
 const initialState:any = {
-    ingredients: {
-        salad:0,
-        bacon: 0,
-        cheese: 0,
-        meat: 0
-    },
-    totalPrice:4
+    // ingredients: {
+    //     salad:'',
+    //     bacon: '',
+    //     cheese: '',
+    //     meat: ''
+    // },
+    ingredients: null,
+    totalPrice:4,
+    error:false
 }
 
 const INGREDIENT_PRICES:any = {
@@ -40,6 +43,28 @@ const reducer = (state=initialState, action:any) =>{
                 },
                 totalPrice: state.totalPrice - INGREDIENT_PRICES[action.ingredientName]
             };
+        case actionTypes.SET_INGREDIENTS:
+            //Note Way1
+            return{
+               ...state,
+               ingredients: action.ingredients,
+               totalPrice: 4,
+               error: false
+            };
+
+            //Note way2 By using utility
+            // return updateObject(state,{
+                
+            //    ingredients: action.ingredients,
+            //    totalPrice: 4,
+            //    error: false
+            // });
+        case actionTypes.FETCH_INGREDIENTS_FAILED:
+            return{
+                ...state,
+                error: true
+            }  
+           // return updateObject(state, {error:true});      
         default:
             return state;    
    }
