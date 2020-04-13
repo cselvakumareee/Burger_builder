@@ -6,7 +6,9 @@ import { Link } from 'react-router-dom';
 const NavigationItems = (props:any) => (
     <ul className="NavigationItems">
         <NavigationItem link="/" exact>Burger Builder</NavigationItem>
-        <NavigationItem link="/orders">Orders</NavigationItem>
+        {props.isAuthenticate ? <NavigationItem link="/orders">Orders</NavigationItem>: null}
+       {!props.isAuthenticate ? <NavigationItem link="/auth">Authenticate</NavigationItem> : 
+       <NavigationItem link="/logout">Logout</NavigationItem>}
     </ul>
 );
 

@@ -3,12 +3,14 @@ import Auxiliary from "../Auxiliary/Auxiliary";
 import "./Layout.scss";
 import Toolbar from "../../components/Navigation/Toolbar/Toolbar";
 import SideDrawer from "../../components/SideDrawer/SideDrawer";
+import { connect } from 'react-redux';
 
-interface ILayoutState{
-  sideDrawerClosed:boolean;
+interface ILayoutProps{
+  
+  isAuthenticate:any
 }
 
-class Layout extends Component<{},ILayoutState> {
+class Layout extends Component<ILayoutProps,{}> {
    state = {
        sideDrawerClosed: false
    }
@@ -20,7 +22,7 @@ class Layout extends Component<{},ILayoutState> {
    }
     
    sideDrawerToggleHandler = () =>{
-     this.setState(prevState => {
+     this.setState((prevState:any) => {
        return{
          sideDrawerClosed:!prevState.sideDrawerClosed
        }
@@ -30,7 +32,7 @@ class Layout extends Component<{},ILayoutState> {
   render() {
     return (
       <Auxiliary>
-        <Toolbar sideDrawerToggled={this.sideDrawerToggleHandler}/>
+        <Toolbar isAuth={this.props.isAuthenticate} sideDrawerToggled={this.sideDrawerToggleHandler}/>
         <SideDrawer open={this.state.sideDrawerClosed} closed={this.sideDrawerHandler}/>
         <main className="content">{this.props.children}</main>
       </Auxiliary>
@@ -38,4 +40,10 @@ class Layout extends Component<{},ILayoutState> {
   }
 }
 
-export default Layout;
+const mapStateToProps = (state:any) => {
+  return {
+    isAuthenticate: state.Auth.token != null
+  }
+}
+
+export default connect(mapStateToProps)(Layout);

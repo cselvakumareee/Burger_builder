@@ -15,7 +15,8 @@ interface IContactDataProps {
   ings: any,
   price: any,
   onOrderBurger:any,
-  loading: any
+  loading: any,
+  token: any
 }
 
 class ContactData extends Component<IContactDataProps, {}> {
@@ -126,7 +127,7 @@ console.log()
       //thats y they are using form data
       orderData: formData
     };
-    this.props.onOrderBurger(order);
+    this.props.onOrderBurger(order, this.props.token);
   };
 
   checkValidity = (value:any, rules:any) =>{
@@ -220,14 +221,15 @@ const mapStateToProps = (state:any) => {
   return{
     ings: state.BurgerBuilder.ingredients,
     price: state.BurgerBuilder.totalPrice,
-    loading: state.Order.loading
+    loading: state.Order.loading,
+    token: state.Auth.token
   };
 };
 
 const mapDispatchToProps = (dispatch:any) => {
   return{
-    onOrderBurger: (orderData:any)=> {
-      return console.log('onOrderBurgeris triggering'), dispatch( OrderActionCreator.purchaseBurger(orderData))}
+    onOrderBurger: (orderData:any, token:any)=> {
+      return console.log('onOrderBurgeris triggering'), dispatch( OrderActionCreator.purchaseBurger(orderData,token))}
   }
 }
 

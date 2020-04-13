@@ -8,3 +8,8 @@ initIngredients
       purchaseBurger,
      purchaseInit,
     fetchOrders } from './OrderActionCreator';
+
+export {
+    auth,
+    logout
+} from './AuthActionCreator';   

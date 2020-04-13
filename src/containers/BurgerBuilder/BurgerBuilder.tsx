@@ -21,7 +21,8 @@ interface IBurgerBuilderProps {
   onInitIngredients: any,
   onInitPurchased: any,
   price:any,
-  error:any
+  error:any,
+  isAuthenticated:any
 }
 
 class BurgerBuilder extends Component<IBurgerBuilderProps, {}> {
@@ -51,9 +52,15 @@ class BurgerBuilder extends Component<IBurgerBuilderProps, {}> {
   }
 
   purchaseHandler = () => {
-    this.setState({
-      purchasing: true,
-    });
+    if(this.props.isAuthenticated){
+      this.setState({
+        purchasing: true,
+      });
+    }
+    else{
+      this.props.history.push("/auth");
+    }
+    
   };
 
   purchaseCancelHandler = () => {
@@ -175,6 +182,7 @@ class BurgerBuilder extends Component<IBurgerBuilderProps, {}> {
             // It wont wait for any click function & finally pass props to child comp
             purchaseable={this.updatePurchaseState(this.props.ings)}
             ordered={this.purchaseHandler}
+            isAuth = {this.props.isAuthenticated}
           />
         </Auxiliary>
       );
@@ -211,7 +219,8 @@ const mapStateToProps = (state:any) =>{
   return{
     ings: state.BurgerBuilder.ingredients,
     price: state.BurgerBuilder.totalPrice,
-    error: state.BurgerBuilder.error
+    error: state.BurgerBuilder.error,
+    isAuthenticated: state.Auth.token !== null
   }
 };
 

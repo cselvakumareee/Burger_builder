@@ -10,13 +10,14 @@ import { connect } from 'react-redux';
 interface IOrdersProps{
     onInitFetchOrders:any,
     orders: any,
-    loading: any
+    loading: any,
+    token: any
 }
 
 class Orders extends Component<IOrdersProps, {}>{
     
     componentDidMount(){
-        this.props.onInitFetchOrders();
+        this.props.onInitFetchOrders(this.props.token);
     }
     render(){
         let ordersComp = <Spinner />
@@ -37,13 +38,14 @@ class Orders extends Component<IOrdersProps, {}>{
 const mapStateToProps = (state:any) => {
     return{
         orders: state.Order.orders,
-        loading: state.Order.loading
+        loading: state.Order.loading,
+        token: state.Auth.token
     }
 }
 
 const mapDispatchToProps = (dispatch:any) =>{
     return {
-        onInitFetchOrders: ()=> dispatch(OrderActionCreator.fetchOrders())
+        onInitFetchOrders: (token:any)=> dispatch(OrderActionCreator.fetchOrders(token))
     };
 };
 

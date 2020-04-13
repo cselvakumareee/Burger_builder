@@ -8,12 +8,14 @@ import { Provider } from 'react-redux';
 import { createStore, applyMiddleware, combineReducers } from 'redux';
 import BurgerBuilderReducer from './Store/Reducer/BurgerBuilderReducer';
 import OrderReducer from './Store/Reducer/OrderReducer';
+import AuthReducer from './Store/Reducer/AuthReducer';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
 
 const rootReducer = combineReducers({
   BurgerBuilder: BurgerBuilderReducer,
-  Order: OrderReducer
+  Order: OrderReducer,
+  Auth: AuthReducer
 });
 
 //Note: its is simple middleware
