@@ -11,13 +11,14 @@ interface IOrdersProps{
     onInitFetchOrders:any,
     orders: any,
     loading: any,
-    token: any
+    token: any,
+    userId: any
 }
 
 class Orders extends Component<IOrdersProps, {}>{
     
     componentDidMount(){
-        this.props.onInitFetchOrders(this.props.token);
+        this.props.onInitFetchOrders(this.props.token, this.props.userId);
     }
     render(){
         let ordersComp = <Spinner />
@@ -39,13 +40,14 @@ const mapStateToProps = (state:any) => {
     return{
         orders: state.Order.orders,
         loading: state.Order.loading,
-        token: state.Auth.token
+        token: state.Auth.token,
+        userId: state.Auth.userId
     }
 }
 
 const mapDispatchToProps = (dispatch:any) =>{
     return {
-        onInitFetchOrders: (token:any)=> dispatch(OrderActionCreator.fetchOrders(token))
+        onInitFetchOrders: (token:any, userId:any)=> dispatch(OrderActionCreator.fetchOrders(token, userId))
     };
 };
 

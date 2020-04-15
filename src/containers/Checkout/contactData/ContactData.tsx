@@ -16,7 +16,8 @@ interface IContactDataProps {
   price: any,
   onOrderBurger:any,
   loading: any,
-  token: any
+  token: any,
+  userId: any
 }
 
 class ContactData extends Component<IContactDataProps, {}> {
@@ -125,7 +126,8 @@ console.log()
       price: this.props.price,
       //Note: Below place if you are using this.state.orderform you will get lots of unwanted fields like elementConfig & elementType:input
       //thats y they are using form data
-      orderData: formData
+      orderData: formData,
+      userId: this.props.userId
     };
     this.props.onOrderBurger(order, this.props.token);
   };
@@ -222,7 +224,8 @@ const mapStateToProps = (state:any) => {
     ings: state.BurgerBuilder.ingredients,
     price: state.BurgerBuilder.totalPrice,
     loading: state.Order.loading,
-    token: state.Auth.token
+    token: state.Auth.token,
+    userId: state.Auth.userId
   };
 };
 

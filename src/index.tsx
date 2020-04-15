@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.scss';
-import App from './App';
+import  AppConnect from './App'; //we stored app comp in Appconnect
 import * as serviceWorker from './serviceWorker';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
@@ -18,25 +18,13 @@ const rootReducer = combineReducers({
   Auth: AuthReducer
 });
 
-//Note: its is simple middleware
-const logger = (store:any) => {
-  return (next:any) =>{
-     return (action:any) =>{
-         //console.log('[Middleware] Dispatching', action);
-         const result = next(action);
-         //console.log('[Middleware] next state', store.getState());
-         return result;
-     }
-  }
-};
-
 
 const store = createStore(rootReducer, composeWithDevTools(applyMiddleware(thunk)));
 
 const app = (
   <Provider store={store}>
   <BrowserRouter>
-  <App />
+  <AppConnect />
   </BrowserRouter>
   </Provider>
 );

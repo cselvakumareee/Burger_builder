@@ -23,6 +23,9 @@ export const authFail = (error: any) => {
 };
 
 export const logout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('expirationDate');
+    localStorage.removeItem('userId');
     return {
         type: actionTypes.AUTH_LOGOUT
     }
@@ -53,12 +56,45 @@ export const auth = (email:any, password:any, isSignup:any) => {
         axios.post(url, authData)
         .then(response =>{
             console.log(response);
-            dispatch(authSuccess(response.data.idToken, response.data.LocalId));
+            const expirationDate:any = new Date(new Date().getTime() + (response.data.expiresIn *1000));
+            localStorage.setItem('token', response.data.idToken);
+            localStorage.setItem('expirationDate', expirationDate);
+            localStorage.setItem('userId', response.data.localId);
+            dispatch(authSuccess(response.data.idToken, response.data.localId));
             dispatch(checkAuthTimeout(response.data.expiresIn))
         })
         .catch(error =>{
             console.log(error);
             dispatch(authFail(error.response.data.error));//Note: important
         })
+    }
+}
+
+export const setAuthRedirectPath = (path:any) => {
+    return {
+        type: actionTypes.SET_AUTH_REDIRECT_PATH,
+        path: path
+    }
+}
+
+//Here the code help for auto login
+export const authCheckState = () => {
+    return (dispatch:any) =>{
+        const token = localStorage.getItem('token');
+        if(!token){
+            dispatch(logout());
+        }
+        else{
+            const expirationDateOld:any = localStorage.getItem('expirationDate');
+            const expirationDate:any = new Date(expirationDateOld); //expirationDateOld is string so we are converting as a date
+            if(expirationDate <= new Date()){  //ex 11PM <= 10PM so always else condition will go
+                dispatch(logout());
+            }
+            else{
+                const userId = localStorage.getItem('userId');
+                dispatch(authSuccess(token, userId));
+                dispatch(checkAuthTimeout((expirationDate.getTime()- new Date().getTime())/1000));
+            }
+        }
     }
 }

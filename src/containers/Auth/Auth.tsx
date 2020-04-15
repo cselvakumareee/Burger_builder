@@ -12,6 +12,10 @@ interface IAuthProps {
   loading: any;
   error: any;
   isAuthenticate: any;
+  onSetAuthRedirectPath:any,
+  buildingBurger:any,
+  authRedirectPath:any,
+  history: any
 }
 
 class Auth extends Component<IAuthProps, {}> {
@@ -48,6 +52,12 @@ class Auth extends Component<IAuthProps, {}> {
     },
     isSignup: true,
   };
+  componentDidMount(){
+    if(!this.props.buildingBurger && this.props.authRedirectPath != '/'){
+      this.props.onSetAuthRedirectPath();
+    }
+    
+  }
   checkValidity = (value: any, rules: any) => {
     let isValid = true;
 
@@ -129,7 +139,7 @@ class Auth extends Component<IAuthProps, {}> {
     }
     let authRedirect = null;
     if (this.props.isAuthenticate) {
-      authRedirect = <Redirect to="/" />;
+      authRedirect = <Redirect to={this.props.onSetAuthRedirectPath} />;
     }
     return (
       <div className="Auth">
@@ -152,6 +162,8 @@ const mapStateToProps = (state: any) => {
     loading: state.Auth.loading,
     error: state.Auth.error,
     isAuthenticate: state.Auth.token !== null,
+    buildingBurger: state.BurgerBuilder.building,
+    authRedirectPath: state.Auth.authRedirectPath
   };
 };
 
@@ -159,6 +171,7 @@ const mapDispatchToProps = (dispatch: any) => {
   return {
     onAuth: (email: any, password: any, isSignup: any) =>
       dispatch(AuthActionCreator.auth(email, password, isSignup)),
+    onSetAuthRedirectPath: ()=> dispatch(AuthActionCreator.setAuthRedirectPath('/'))  
   };
 };
 

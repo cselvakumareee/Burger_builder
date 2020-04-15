@@ -22,7 +22,8 @@ interface IBurgerBuilderProps {
   onInitPurchased: any,
   price:any,
   error:any,
-  isAuthenticated:any
+  isAuthenticated:any,
+  onSetAuthRedirectPath:any
 }
 
 class BurgerBuilder extends Component<IBurgerBuilderProps, {}> {
@@ -58,6 +59,7 @@ class BurgerBuilder extends Component<IBurgerBuilderProps, {}> {
       });
     }
     else{
+      this.props.onSetAuthRedirectPath('/checkout');
       this.props.history.push("/auth");
     }
     
@@ -159,7 +161,7 @@ class BurgerBuilder extends Component<IBurgerBuilderProps, {}> {
 
     for (let key in disabledInfoFinal) {
       disabledInfoFinal[key] = disabledInfoFinal[key] <= 0;
-    }
+    } 
 
     let orderSummary = null;
 
@@ -229,7 +231,8 @@ const mapDispatchToProps = (dispatch:any) => {
     onIngredientAdded: (ingName:any)=> dispatch(BurgerBuilderActionCreators.addIngredient(ingName)),
     onIngredientRemoved: (ingName:any)=> dispatch(BurgerBuilderActionCreators.removeIngredient(ingName)),
     onInitIngredients: ()=> dispatch(BurgerBuilderActionCreators.initIngredients()),
-    onInitPurchased: ()=> dispatch(BurgerBuilderActionCreators.purchaseInit()) //Note: purchaseInit comes from orderActionCreator
+    onInitPurchased: ()=> dispatch(BurgerBuilderActionCreators.purchaseInit()), //Note: purchaseInit comes from orderActionCreator
+    onSetAuthRedirectPath: (path:any) => dispatch(BurgerBuilderActionCreators.setAuthRedirectPath(path)) //Note: here its comes from auth action creator
   }
 }
 

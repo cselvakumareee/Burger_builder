@@ -10,7 +10,8 @@ const initialState:any = {
     // },
     ingredients: null,
     totalPrice:4,
-    error:false
+    error:false,
+    building: false
 }
 
 const INGREDIENT_PRICES:any = {
@@ -32,7 +33,8 @@ const reducer = (state=initialState, action:any) =>{
                   // the below code will give salad : 0 + 1,
                   [action.ingredientName] : state.ingredients[action.ingredientName] + 1,
               },
-              totalPrice: state.totalPrice + INGREDIENT_PRICES[action.ingredientName]
+              totalPrice: state.totalPrice + INGREDIENT_PRICES[action.ingredientName],
+              building: true
            };
         case actionTypes.REMOVE_INGREDIENT:
             return{
@@ -41,7 +43,8 @@ const reducer = (state=initialState, action:any) =>{
                     ...state.ingredients,
                     [action.ingredientName] : state.ingredients[action.ingredientName] - 1,
                 },
-                totalPrice: state.totalPrice - INGREDIENT_PRICES[action.ingredientName]
+                totalPrice: state.totalPrice - INGREDIENT_PRICES[action.ingredientName],
+                building: true
             };
         case actionTypes.SET_INGREDIENTS:
             //Note Way1
@@ -49,7 +52,8 @@ const reducer = (state=initialState, action:any) =>{
                ...state,
                ingredients: action.ingredients,
                totalPrice: 4,
-               error: false
+               error: false,
+               building: false
             };
 
             //Note way2 By using utility
