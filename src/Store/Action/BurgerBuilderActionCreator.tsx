@@ -29,12 +29,15 @@ export const fetchIngredientsFailed = () => {
 }
 
 export const initIngredients = () => {
-  return (dispatch:any) =>{
-    axios.get("/ingredients.json").then(response =>{
+  return {
+    type: actionTypes.INIT_INGREDIENTS
+  }
+  // return (dispatch:any) =>{
+  //   axios.get("/ingredients.json").then(response =>{
       
-        dispatch(setIngredients(response.data));
-       }).catch(error =>{
-         dispatch(fetchIngredientsFailed());
-       })    
-  };
+  //       dispatch(setIngredients(response.data));
+  //      }).catch(error =>{
+  //        dispatch(fetchIngredientsFailed());
+  //      })    
+  // };
 };

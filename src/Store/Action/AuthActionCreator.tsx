@@ -51,32 +51,38 @@ export const checkAuthTimeout = (expirationTime:any) => {
 //Async code
 
 export const auth = (email:any, password:any, isSignup:any) => {
-    const authData = {
+    return{
+        type: actionTypes.AUTH_USER,
         email: email,
         password: password,
-        returnSecureToken: true
+        isSignup: isSignup
     }
-    let url = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyCYCBVewlT_3h8RSLMIzRHgHXDwBUklL6Y';
-    if(!isSignup){ 
-        url = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyCYCBVewlT_3h8RSLMIzRHgHXDwBUklL6Y';
-    }
-    return (dispatch:any) =>{
-        dispatch(authStart());
-        axios.post(url, authData)
-        .then(response =>{
-            console.log(response);
-            const expirationDate:any = new Date(new Date().getTime() + (response.data.expiresIn *1000));
-            localStorage.setItem('token', response.data.idToken);
-            localStorage.setItem('expirationDate', expirationDate);
-            localStorage.setItem('userId', response.data.localId);
-            dispatch(authSuccess(response.data.idToken, response.data.localId));
-            dispatch(checkAuthTimeout(response.data.expiresIn))
-        })
-        .catch(error =>{
-            console.log(error);
-            dispatch(authFail(error.response.data.error));//Note: important
-        })
-    }
+    // const authData = {
+    //     email: email,
+    //     password: password,
+    //     returnSecureToken: true
+    // }
+    // let url = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyCYCBVewlT_3h8RSLMIzRHgHXDwBUklL6Y';
+    // if(!isSignup){ 
+    //     url = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyCYCBVewlT_3h8RSLMIzRHgHXDwBUklL6Y';
+    // }
+    // return (dispatch:any) =>{
+    //     dispatch(authStart());
+    //     axios.post(url, authData)
+    //     .then(response =>{
+    //         console.log(response);
+    //         const expirationDate:any = new Date(new Date().getTime() + (response.data.expiresIn *1000));
+    //         localStorage.setItem('token', response.data.idToken);
+    //         localStorage.setItem('expirationDate', expirationDate);
+    //         localStorage.setItem('userId', response.data.localId);
+    //         dispatch(authSuccess(response.data.idToken, response.data.localId));
+    //         dispatch(checkAuthTimeout(response.data.expiresIn))
+    //     })
+    //     .catch(error =>{
+    //         console.log(error);
+    //         dispatch(authFail(error.response.data.error));//Note: important
+    //     })
+    // }
 }
 
 export const setAuthRedirectPath = (path:any) => {
@@ -88,22 +94,25 @@ export const setAuthRedirectPath = (path:any) => {
 
 //Here the code help for auto login
 export const authCheckState = () => {
-    return (dispatch:any) =>{
-        const token = localStorage.getItem('token');
-        if(!token){
-            dispatch(logout());
-        }
-        else{
-            const expirationDateOld:any = localStorage.getItem('expirationDate');
-            const expirationDate:any = new Date(expirationDateOld); //expirationDateOld is string so we are converting as a date
-            if(expirationDate <= new Date()){  //ex 11PM <= 10PM so always else condition will go
-                dispatch(logout());
-            }
-            else{
-                const userId = localStorage.getItem('userId');
-                dispatch(authSuccess(token, userId));
-                dispatch(checkAuthTimeout((expirationDate.getTime()- new Date().getTime())/1000));
-            }
-        }
+    return {
+        type: actionTypes.AUTH_CHECK_STATE
     }
+    // return (dispatch:any) =>{
+    //     const token = localStorage.getItem('token');
+    //     if(!token){
+    //         dispatch(logout());
+    //     }
+    //     else{
+    //         const expirationDateOld:any = localStorage.getItem('expirationDate');
+    //         const expirationDate:any = new Date(expirationDateOld); //expirationDateOld is string so we are converting as a date
+    //         if(expirationDate <= new Date()){  //ex 11PM <= 10PM so always else condition will go
+    //             dispatch(logout());
+    //         }
+    //         else{
+    //             const userId = localStorage.getItem('userId');
+    //             dispatch(authSuccess(token, userId));
+    //             dispatch(checkAuthTimeout((expirationDate.getTime()- new Date().getTime())/1000));
+    //         }
+    //     }
+    // }
 }
