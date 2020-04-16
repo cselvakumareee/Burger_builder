@@ -33,7 +33,7 @@ class Layout extends Component<ILayoutProps,{}> {
     return (
       <Auxiliary>
         <Toolbar isAuth={this.props.isAuthenticate} sideDrawerToggled={this.sideDrawerToggleHandler}/>
-        <SideDrawer open={this.state.sideDrawerClosed} closed={this.sideDrawerHandler}/>
+        <SideDrawer isAuth={this.props.isAuthenticate} open={this.state.sideDrawerClosed} closed={this.sideDrawerHandler}/>
         <main className="content">{this.props.children}</main>
       </Auxiliary>
     );
