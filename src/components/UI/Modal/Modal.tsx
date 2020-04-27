@@ -3,35 +3,23 @@ import "./Modal.scss";
 import Auxiliary from "../../../hoc/Auxiliary/Auxiliary";
 import Backdrop from "../Backdrop/Backdrop";
 
-interface ImodalInterfaceProps {
-  modalClosed: any;
-  show: any;
-}
-
-class Modal extends Component<ImodalInterfaceProps, {}> {
-   shouldComponentUpdate(nextProps:any, nextState:any){
-       return nextProps.show !== this.props.show || nextProps.children !== this.props.children;
-   }
-
-   componentDidUpdate(){
-       console.log("modal is rendering");
-   }
-
-  render() {
+const Modal = (props:any) => {
+   
     return (
       <Auxiliary>
-        <Backdrop clicked={this.props.modalClosed} show={this.props.show} />
+        <Backdrop clicked={props.modalClosed} show={props.show} />
         <div
           className="Modal"
           style={{
-            transform: this.props.show ? "translateY(0)" : "translateY(-100vh)",
-            opacity: this.props.show ? "1" : "0"
+            transform: props.show ? "translateY(0)" : "translateY(-100vh)",
+            opacity: props.show ? "1" : "0"
           }}
         >
-          {this.props.children}
+          {props.children}
         </div>
       </Auxiliary>
     );
-  }
+  
 }
-export default Modal;
+export default React.memo(Modal, (prevProps:any, nextProps:any)=>
+(nextProps.show === prevProps.show && nextProps.children === prevProps.children));

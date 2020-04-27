@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useState } from "react";
 import Button from "../../../components/UI/Button/Button";
 import "./ContactData.scss";
 import axios from "../../../axios-orders";
@@ -8,25 +8,8 @@ import { connect } from 'react-redux';
 import withErrorHandler from '../../../hoc/withErrorHandler/withErrorHandler';
 import * as OrderActionCreator from '../../../Store/Action/Index';
 
-interface IContactDataProps {
-  //ingredients: any;
-  //price: any;
-  history: any,
-  ings: any,
-  price: any,
-  onOrderBurger:any,
-  loading: any,
-  token: any,
-  userId: any
-}
-
-class ContactData extends Component<IContactDataProps, {}> {
-  constructor(props:any){
-super(props);
-console.log()
-  }
-  state = {
-    OrderForm: {
+const ContactData = (props:any) => {
+  const [OrderForm, setOrderForm]:any = useState({
       name: {
         elementtype: "input",
         elementConfig: {
@@ -106,33 +89,30 @@ console.log()
         valid:true,
         validation:{}
       }
-    },
-    formIsValid: false,
-    //loading: false
-  };
-
-  orderHandler = (event: any) => {
+    });
+    const [formIsValid, setFormIsValid]:any = useState(false);
+   
+  const orderHandler = (event: any) => {
     event.preventDefault();
     
     const formData: any = {};
-    let orderFormLoop: any = { ...this.state.OrderForm };
+    let orderFormLoop: any = { ...OrderForm };
     for (let formElementIdentifier in orderFormLoop) {
       formData[formElementIdentifier] =
         orderFormLoop[formElementIdentifier].value;
       //output: name: 'selva'
     }
     const order = {
-      ingredients: this.props.ings,
-      price: this.props.price,
-      //Note: Below place if you are using this.state.orderform you will get lots of unwanted fields like elementConfig & elementType:input
-      //thats y they are using form data
+      ingredients: props.ings,
+      price: props.price,
+      
       orderData: formData,
-      userId: this.props.userId
+      userId: props.userId
     };
-    this.props.onOrderBurger(order, this.props.token);
+    props.onOrderBurger(order, props.token);
   };
 
-  checkValidity = (value:any, rules:any) =>{
+  const checkValidity = (value:any, rules:any) =>{
    let isValid = true;
 
    if(!rules){
@@ -150,10 +130,10 @@ console.log()
    return isValid;
   }
 
-  inputChangeHandler = (event: any, inputIdentifier: any) => {
+  const inputChangeHandler = (event: any, inputIdentifier: any) => {
     console.log(event.target.value);
     //Below will help to clone the object, but it wont clone deeply mainly it wont clone inside elementConfig
-    const updatedOrderForm = { ...this.state.OrderForm };
+    const updatedOrderForm = { ...OrderForm };
     //To get rid of error we are cloning below again
     const updatedOrderFormFinal: any = { ...updatedOrderForm };
 
@@ -161,7 +141,7 @@ console.log()
     const updatedFormElement = { ...updatedOrderFormFinal[inputIdentifier] };
 
     updatedFormElement.value = event.target.value;
-    updatedFormElement.valid = this.checkValidity(updatedFormElement.value, updatedFormElement.validation);
+    updatedFormElement.valid = checkValidity(updatedFormElement.value, updatedFormElement.validation);
     updatedFormElement.touched = true;
 
     updatedOrderFormFinal[inputIdentifier] = updatedFormElement;
@@ -172,11 +152,12 @@ console.log()
       formIsValid = updatedOrderFormFinal[inputIdentifier].valid && formIsValid;
     }
     //Note: here state property:above variable name like formIsValid:formIsValid
-    this.setState({ OrderForm: updatedOrderFormFinal, formIsValid: formIsValid });
+    setOrderForm(updatedOrderFormFinal);
+    setFormIsValid(formIsValid);
   };
-  render() {
+  
     const formElementArray = [];
-    let orderFormFinal: any = { ...this.state.OrderForm };
+    let orderFormFinal: any = { ...OrderForm };
     //Note: In state we have data as a js object but looping through we need array of object thats y we are using for loop here
     for (let key in orderFormFinal) {
       formElementArray.push({
@@ -185,7 +166,7 @@ console.log()
       });
     }
     let form = (
-      <form onSubmit={this.orderHandler}>
+      <form onSubmit={orderHandler}>
         {formElementArray.map((formElement: any) => (
           <div>
           <Input
@@ -197,17 +178,17 @@ console.log()
             shouldValidate = {formElement.Config.validation}
             touched = {formElement.Config.touched}
             changed={(event: any) =>
-              this.inputChangeHandler(event, formElement.id)
+              inputChangeHandler(event, formElement.id)
             }
           />
           <p>{formElement.elementtype}</p>
           </div>
         ))}
 
-        <Button btnType="Success" disabled={!this.state.formIsValid}>ORDER</Button>
+        <Button btnType="Success" disabled={!formIsValid}>ORDER</Button>
       </form>
     );
-    if (this.props.loading) {
+    if (props.loading) {
       form = <Spinner />;
     }
     return (
@@ -216,7 +197,7 @@ console.log()
         {form}
       </div>
     );
-  }
+  
 };
 
 const mapStateToProps = (state:any) => {
